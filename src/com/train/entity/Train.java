@@ -14,6 +14,25 @@ public class Train extends BaseQuery<Train> {
 	private double minusAcceleration;//最大负加速度
 	private double maxAcceleration_rate;//最大正加速度变化率
 	private double minusAcceleration_rate;//最大负加速度变化率
+	private double stationPrecision;//停车精度
+	private int EBInum;//EBI触发次数
+	
+
+	public int getEBInum() {
+		return EBInum;
+	}
+
+	public void setEBInum(int eBInum) {
+		EBInum = eBInum;
+	}
+
+	public double getStationPrecision() {
+		return stationPrecision;
+	}
+
+	public void setStationPrecision(double stationPrecision) {
+		this.stationPrecision = stationPrecision;
+	}
 
 	public double getMaxAcceleration_rate() {
 		return maxAcceleration_rate;

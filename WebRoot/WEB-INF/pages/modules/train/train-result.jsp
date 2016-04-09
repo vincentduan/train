@@ -155,6 +155,7 @@ var data = ${data };
 					<thead>
 						<tr>
 							<th>文件</th>
+							<th>实际运行时间</th>
 							<th>最大加速度</th>
 							<th>最大加速度变化率</th>
 							<th>惰行区间</th>
@@ -162,14 +163,19 @@ var data = ${data };
 							<th>制动区间</th>
 							<th>停车精度</th>
 							<th>EBI速度限制触发次数</th>
-							<th>评价指标</th>
 						</tr>
 					</thead>
 					<c:forEach items="${trains}" var="train" varStatus="status">
 						<tr>
 							<td>${train.file}</td>
+							<td>${train.runingTime}s</td>
 							<td>${train.maxAcceleration}(正)<br>${train.minusAcceleration}(负)</td>
 							<td>${train.maxAcceleration_rate}(正)<br>${train.minusAcceleration_rate}(负)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>${train.stationPrecision }m</td>
+							<td>${train.EBInum }次</td>
 						</tr>
 					</c:forEach>
 				</table>

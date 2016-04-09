@@ -3,6 +3,7 @@ package com.train.service.impl;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class TrainServiceImpl extends BaseServiceImpl<Train> implements TrainSer
 		XSSFWorkbook wb = null;
 		List<Train> trains = new LinkedList<>();
 		// 时间格式小写hh表示12小时制，大写HH表示24小时制
-		// SimpleDateFormat datetemp = new SimpleDateFormat("HH:mm:ss");
+		SimpleDateFormat datetemp = new SimpleDateFormat("HH:mm:ss");
 		for (int i = 0; i < file.length; i++) {
 			fileName = file[i].getFileItem().getName();
 			double maxAcceleration = 0.0;// 最大正加速度
@@ -54,6 +55,10 @@ public class TrainServiceImpl extends BaseServiceImpl<Train> implements TrainSer
 			double temp1 = 0.0;
 			double temp2 = 0.0;
 			double temp3 = 0.0;
+			String runingTime = "";//实际运行时间
+			Long runingTime1 = 0L;
+			double station_distance = 0.0;//站间实际长度
+			int EBInum = 0;
 			Train train = new Train();
 			logger.debug(file[i].getFileItem().getName());
 			if (!file[i].isEmpty()) {
@@ -76,9 +81,7 @@ public class TrainServiceImpl extends BaseServiceImpl<Train> implements TrainSer
 							slope.add(row.getCell(14).getNumericCellValue());
 							force.add(row.getCell(16).getNumericCellValue());
 							power.add(row.getCell(17).getNumericCellValue());
-							
 						}
-						// logger.debug(datetemp.format(row.getCell(0).getDateCellValue()));
 						addLine(jsonArray, fileName + "-speed", speed, hashMap, jsonObj, 0);
 						addLine(jsonArray, fileName + "-power", power, hashMap, jsonObj, 1);
 						addLine(jsonArray, fileName + "-slope", slope, hashMap, jsonObj, 2);
@@ -88,6 +91,7 @@ public class TrainServiceImpl extends BaseServiceImpl<Train> implements TrainSer
 						List<LinkedList<Double>> slopeList = new LinkedList<>();
 						List<LinkedList<Double>> forceList = new LinkedList<>();
 						List<LinkedList<Double>> powerList = new LinkedList<>();
+						station_distance = sheet.getRow(4).getCell(1).getNumericCellValue();
 						for (int j = 11; j < sheet.getLastRowNum(); j++) {
 						/*for (int j = 11; j < 19; j++) {*/
 							XSSFRow row = sheet.getRow(j);
@@ -95,6 +99,8 @@ public class TrainServiceImpl extends BaseServiceImpl<Train> implements TrainSer
 							slope = new LinkedList<>();
 							force = new LinkedList<>();
 							power = new LinkedList<>();
+							//EBI触发次数
+							EBInum = row.getCell(7).getNumericCellValue() > row.getCell(3).getNumericCellValue()?(EBInum+1):EBInum;
 							// 记录数据
 							speed.add(row.getCell(10).getNumericCellValue());
 							speed.add(row.getCell(7).getNumericCellValue());
@@ -124,18 +130,28 @@ public class TrainServiceImpl extends BaseServiceImpl<Train> implements TrainSer
 								BigDecimal b2 = new BigDecimal(Double.toString(temp2));
 								BigDecimal b3 = new BigDecimal(Double.toString(MaxAcceleration_temp));
 								b1.add(b2).doubleValue();
-								//temp3 = (MaxAcceleration_temp-temp2)-(temp2-temp1);//变化率不除时间
-								temp3 = ((b3.subtract(b2)).subtract(b2.subtract(b1)).multiply(new BigDecimal(5))).doubleValue();
+								temp3 = ((b3.subtract(b2)).subtract(b2.subtract(b1)).multiply(new BigDecimal(5))).doubleValue();//变化率
 								//交换
-								//double temp4 = temp3;
 								temp1 = temp2;
 								temp2 = MaxAcceleration_temp;
-								
 								maxAcceleration_rate = temp3 > maxAcceleration_rate ? temp3 : maxAcceleration_rate;
 								minusAcceleration_rate = temp3 < minusAcceleration_rate ? temp3 : minusAcceleration_rate;
 								if(j<40){
 									logger.debug("---------------------"+temp3);
 								}
+							}
+							//计算实际运行时间
+							if(j == 11){
+								runingTime1 = row.getCell(0).getDateCellValue().getTime();
+								logger.debug(datetemp.format(row.getCell(0).getDateCellValue()));
+							}if(j == sheet.getLastRowNum()-1){
+								//计算实际运行时间
+								runingTime = (row.getCell(0).getDateCellValue().getTime()-runingTime1)/1000+"";
+								logger.debug(runingTime);
+								//计算停车精度
+								BigDecimal b1 = new BigDecimal(Double.toString(station_distance));
+								BigDecimal b2 = new BigDecimal(Double.toString(row.getCell(10).getNumericCellValue()));
+								station_distance = b2.subtract(b1).doubleValue();
 							}
 							
 						}
@@ -161,6 +177,9 @@ public class TrainServiceImpl extends BaseServiceImpl<Train> implements TrainSer
 				train.setMinusAcceleration(minusAcceleration);
 				train.setMaxAcceleration_rate(maxAcceleration_rate/0.2);
 				train.setMinusAcceleration_rate(minusAcceleration_rate/0.2);
+				train.setRuningTime(runingTime);
+				train.setStationPrecision(station_distance);
+				train.setEBInum(EBInum);
 				trains.add(train);
 			}
 		}
