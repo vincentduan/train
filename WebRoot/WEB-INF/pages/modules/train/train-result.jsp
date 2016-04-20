@@ -13,7 +13,7 @@ var data = ${data };
 	$(function () {
     $('#chart').highcharts({
    		title: {
-            text: '${title }'
+            text: '时间-速度曲线图'
         },
         credits: {
           enabled:false //去水印
@@ -82,7 +82,7 @@ var data = ${data };
     var data2 = ${data2 };
     $('#chart2').highcharts({
    		title: {
-            text: '${title }'
+            text: '距离-速度曲线图'
         },
         credits: {
           enabled:false //去水印
@@ -155,27 +155,27 @@ var data = ${data };
 					<thead>
 						<tr>
 							<th>文件</th>
-							<th>实际运行时间</th>
-							<th>最大加速度</th>
-							<th>最大加速度变化率</th>
+							<th>实际运行时间(s)</th>
+							<th>最大加速度(m/s<sup>2</sup>)</th>
+							<th>最大加速度变化率(m/ts<sup>2</sup>)</th>
 							<th>惰行区间</th>
 							<th>牵引区间</th>
 							<th>制动区间</th>
-							<th>停车精度</th>
+							<th>停车精度(m)</th>
 							<th>EBI速度限制触发次数</th>
 						</tr>
 					</thead>
 					<c:forEach items="${trains}" var="train" varStatus="status">
 						<tr>
 							<td>${train.file}</td>
-							<td>${train.runingTime}s</td>
+							<td>${train.runingTime}</td>
 							<td>${train.maxAcceleration}(正)<br>${train.minusAcceleration}(负)</td>
 							<td>${train.maxAcceleration_rate}(正)<br>${train.minusAcceleration_rate}(负)</td>
 							<td></td>
 							<td></td>
 							<td></td>
-							<td>${train.stationPrecision }m</td>
-							<td>${train.EBInum }次</td>
+							<td>${train.stationPrecision }</td>
+							<td>${train.EBInum }</td>
 						</tr>
 					</c:forEach>
 				</table>
