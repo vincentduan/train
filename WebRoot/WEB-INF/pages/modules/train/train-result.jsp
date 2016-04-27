@@ -148,37 +148,33 @@ var data = ${data };
 				<div id="chart2" style="min-width: 700px; height: 400px"></div>
 				<hr>
 				<h3 id="section-3">统计</h3>
+				<br>
 				<p>
 					<%-- ${data } --%>
 				</p>
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th>文件</th>
-							<th>实际运行时间(s)</th>
-							<th>最大加速度(m/s<sup>2</sup>)</th>
-							<th>最大加速度变化率(m/ts<sup>2</sup>)</th>
-							<th>惰行区间</th>
-							<th>牵引区间</th>
-							<th>制动区间</th>
-							<th>停车精度(m)</th>
-							<th>EBI速度限制触发次数</th>
-						</tr>
-					</thead>
-					<c:forEach items="${trains}" var="train" varStatus="status">
-						<tr>
-							<td>${train.file}</td>
-							<td>${train.runingTime}</td>
-							<td>${train.maxAcceleration}(正)<br>${train.minusAcceleration}(负)</td>
-							<td>${train.maxAcceleration_rate}(正)<br>${train.minusAcceleration_rate}(负)</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>${train.stationPrecision }</td>
-							<td>${train.EBInum }</td>
-						</tr>
-					</c:forEach>
-				</table>
+				<div class="row" style="border-bottom:1px solid #CCC;padding-bottom: 10px;">
+					<div class="col-md-2"><strong>文件名称</strong></div>
+					<div class="col-md-2"><strong>实际运行时间(s)</strong></div>
+					<div class="col-md-2"><strong>最大加速度(m/s<sup>2</sup>)</strong></div>
+					<div class="col-md-2"><strong>最大加速度变化率(m/ts<sup>2</sup>)</strong></div>
+					<div class="col-md-2"><strong>停车精度(m)</strong></div>
+					<div class="col-md-2"><strong>EBI速度限制触发次数</strong></div>
+				</div>
+				<c:forEach items="${trains}" var="train" varStatus="status">
+					<div class="row" style="border-bottom:1px solid #CCC;padding-bottom: 10px;">
+						<div class="col-md-2">${train.file}</div>
+						<div class="col-md-2">${train.runingTime}</div>
+						<div class="col-md-2">${train.maxAcceleration}(正)<br>${train.minusAcceleration}(负)</div>
+						<div class="col-md-2">${train.maxAcceleration_rate}(正)<br>${train.minusAcceleration_rate}(负)</div>
+						<div class="col-md-2">${train.stationPrecision }</div>
+						<div class="col-md-2">${train.EBInum }</div>
+					</div>
+					<div class="row" style="border-bottom:1px solid #CCC;padding-bottom: 10px;">
+						<c:forEach items="${train.energySection}" var = "energySection">
+							<div class="col-md-2">[${energySection.start },${energySection.end }]此(${energySection.info })区间内产生的${energySection.info }能量为${energySection.energe }</div>
+						</c:forEach>
+					</div>
+				</c:forEach>
 				<hr>
 			</div>
 		</div>

@@ -1,12 +1,14 @@
 package com.train.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.train.entity.EnergySection;
+import com.train.entity.Train;
 import com.train.exception.TrainException;
 import com.train.service.TrainService;
 
@@ -53,7 +57,7 @@ public class TrainController {
 	public String upload(@RequestParam("file") CommonsMultipartFile[] file, HttpServletRequest request, HttpServletResponse response, ModelMap map) {
 		logger.debug("upload-post");
 		String rootpath = request.getSession().getServletContext().getRealPath("/");
-		JSONArray jsonArray = null;
+		JSONArray jsonArray1 = null;
 		JSONArray jsonArray2 = null;
 		String upLoadPath = rootpath + "statics\\upload\\doc\\template.xlsx";
 		String fileName = "template.xlsx";
@@ -62,18 +66,34 @@ public class TrainController {
 		String title = "数据分析图";
 		Map<String, Object> param = new HashMap<>();
 		try {
-			jsonArray = trainService.uploadfile(request, response, file, upLoadPath, param, 1);
-			jsonArray2 = trainService.uploadfile(request, response, file, upLoadPath, param, 2);
+			//jsonArray = trainService.uploadfile(request, response, file, upLoadPath, param, 1);
+			//jsonArray2 = trainService.uploadfile(request, response, file, upLoadPath, param, 2);
 			//logger.debug(jsonArray2);
+			List<Train> trains = trainService.uploadfiles(request, response, file, upLoadPath);
+			jsonArray1 = new JSONArray();
+			jsonArray2 = new JSONArray();
+			for(Train train:trains){
+				for(JSONObject jsonObject : train.getTimes_json()){
+					jsonArray1.add(jsonObject);
+				}
+				for(JSONObject jsonObject : train.getDistance_json()){
+					jsonArray2.add(jsonObject);
+				}
+				for(EnergySection energySection : train.getEnergySection()){
+					logger.debug(energySection);
+				}
+			}
+			map.put("data", jsonArray1);
+			map.put("data2", jsonArray2);
+			map.put("title", title);
+			//以时间为依据
+			//map.put("data", train.getTimes_json());
+			//以距离为依据
+			//map.put("data2", train.getDistance_json());
+			map.put("trains", trains);
 		} catch (TrainException e) {
 			e.printStackTrace();
 		}
-		map.put("title", title);
-		//以时间为依据
-		map.put("data", jsonArray);
-		//以距离为依据
-		map.put("data2", jsonArray2);
-		map.put("trains", param.get("trains"));
 		return path + "train-result";
 	}
 }

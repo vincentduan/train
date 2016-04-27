@@ -1,6 +1,10 @@
 package com.train.entity;
 
-public class Train extends BaseQuery<Train> {
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
+public class Train {
 	private Integer id;
 	private String startStation;// 始发站
 	private String terminalStation;// 终点站
@@ -9,14 +13,41 @@ public class Train extends BaseQuery<Train> {
 	private String endTime;// 停站时刻
 	private String runingTime;// 站间运行时间
 	private String loadFactor;// 满载率
-	private String file;
-	private double maxAcceleration;//最大正加速度
-	private double minusAcceleration;//最大负加速度
-	private double maxAcceleration_rate;//最大正加速度变化率
-	private double minusAcceleration_rate;//最大负加速度变化率
-	private double stationPrecision;//停车精度
-	private int EBInum;//EBI触发次数
-	
+	private String file;// 上传文件名
+	private double maxAcceleration;// 最大正加速度
+	private double minusAcceleration;// 最大负加速度
+	private double maxAcceleration_rate;// 最大正加速度变化率
+	private double minusAcceleration_rate;// 最大负加速度变化率
+	private double stationPrecision;// 停车精度
+	private int EBInum;// EBI触发次数
+	private List<JSONObject> times_json; // 以时间为依据
+	private List<JSONObject> distance_json; // 以距离为依据
+	private List<EnergySection> energySection; //区间能耗
+
+
+	public List<EnergySection> getEnergySection() {
+		return energySection;
+	}
+
+	public void setEnergySection(List<EnergySection> energySection) {
+		this.energySection = energySection;
+	}
+
+	public List<JSONObject> getTimes_json() {
+		return times_json;
+	}
+
+	public void setTimes_json(List<JSONObject> times_json) {
+		this.times_json = times_json;
+	}
+
+	public List<JSONObject> getDistance_json() {
+		return distance_json;
+	}
+
+	public void setDistance_json(List<JSONObject> distance_json) {
+		this.distance_json = distance_json;
+	}
 
 	public int getEBInum() {
 		return EBInum;
