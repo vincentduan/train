@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -171,7 +172,21 @@ var data = ${data };
 					</div>
 					<div class="row" style="border-bottom:1px solid #CCC;padding-bottom: 10px;">
 						<c:forEach items="${train.energySection}" var = "energySection">
-							<div class="col-md-2">[${energySection.start },${energySection.end }]此(${energySection.info })区间内产生的${energySection.info }能量为${energySection.energe }</div>
+							<c:if test="${fn:split(energySection.info,',')[0] != '0x10d'}">
+								<div class="col-md-2">
+									[${energySection.start },${energySection.end }]此
+									<c:if test="${energySection.info == '3'}">
+										惰行区间内产生的能量
+									</c:if>
+									<c:if test="${energySection.info == '2'}">
+										制动区间内产生的再生能量
+									</c:if>
+									<c:if test="${energySection.info == '1'}">
+										牵引区间内产生的牵引能量
+									</c:if>
+									为${energySection.energe }
+								</div>
+							</c:if>
 						</c:forEach>
 					</div>
 				</c:forEach>

@@ -230,7 +230,7 @@ public class TrainServiceImpl implements TrainService {
 			Long runingTime1 = 0L;
 			double station_distance = 0.0;//站间实际长度
 			int EBInum = 0; //EBI触发次数
-			String flag = ""; //区间标记
+			String flag = ""; //区间标记 1:牵引2:制动3:惰行
 			List<EnergySection> energeSections = new LinkedList<>();
 			if (!file[i].isEmpty()) {
 				speed = new LinkedList<>();// 实际速度(km/h)
@@ -311,8 +311,6 @@ public class TrainServiceImpl implements TrainService {
 						//计算实际运行时间
 						if(j == 11){
 							runingTime1 = datetemp.parse(row.getCell(0)+"").getTime();
-							//runingTime1 = row.getCell(0).getDateCellValue().getTime();
-							//logger.debug(datetemp.format(row.getCell(0).getDateCellValue()));
 						}if(j == last_rowNum-1){
 							//计算实际运行时间
 							runingTime = (datetemp.parse(row.getCell(0)+"").getTime()-runingTime1)/1000+"";
@@ -323,28 +321,59 @@ public class TrainServiceImpl implements TrainService {
 						}
 						// 计算区间能耗
 						if(j == 11){
-							flag = row.getCell(16).getStringCellValue();
+							if("0x105".equals(row.getCell(16).getStringCellValue()) && !"25.0".equals(row.getCell(17).toString())){
+								flag = "2";//制动
+							}
+							if("0x103".equals(row.getCell(16).getStringCellValue()) && !"25.0".equals(row.getCell(17).toString())){
+								flag = "1";//牵引
+							}
+							if("25.0".equals(row.getCell(17).toString())){
+								flag = "3";//惰行
+							}
 							EnergySection energySection = new EnergySection();
 							energySection.setStart(row.getCell(0)+"");
-							energySection.setEnerge(0.0);
-							energySection.setInfo(row.getCell(16)+"");
+							double d1 = row.getCell(13).getNumericCellValue();
+							double d2 = row.getCell(14).getNumericCellValue();
+							energySection.setEnerge(d1*d2);
+							energySection.setInfo(flag);
 							energySection.setEnd(row.getCell(0)+"");
 							energeSections.add(energySection);
 						}else{
-							if(flag.equals(row.getCell(16).getStringCellValue())){
-								EnergySection energySection = energeSections.get(energeSections.size()-1);
-								BigDecimal b1 = new BigDecimal(Double.toString(energySection.getEnerge()));
-								BigDecimal b2 = new BigDecimal(Double.toString(energySection.getEnerge()));
-								energySection.setEnerge((b1.add(b2)).doubleValue());
-								energySection.setInfo(row.getCell(16)+"");
+							String flag2 = "";
+							if("0x105".equals(row.getCell(16).getStringCellValue()) && !"25.0".equals(row.getCell(17).toString())){
+								flag2 = "2";//制动
+							}
+							if("0x103".equals(row.getCell(16).getStringCellValue()) && !"25.0".equals(row.getCell(17).toString())){
+								flag2 = "1";//牵引
+							}
+							if("25.0".equals(row.getCell(17).toString())){
+								flag2 = "3";//惰行
+							}
+							if(flag.equals(flag2)){
+								EnergySection energySection = energeSections.get(energeSections.size()-1);//得到上一次的能量
+								double d1 = row.getCell(13).getNumericCellValue();
+								double d2 = row.getCell(14).getNumericCellValue();
+								energySection.setEnerge((d1*d2)+energySection.getEnerge());
+								energySection.setInfo(flag);
 								energySection.setEnd(row.getCell(0)+"");
 							}else{
-								flag = row.getCell(16).getStringCellValue();
+								if("0x105".equals(row.getCell(16).getStringCellValue()) && !"25.0".equals(row.getCell(17).toString())){
+									flag = "2";//制动
+								}
+								if("0x103".equals(row.getCell(16).getStringCellValue()) && !"25.0".equals(row.getCell(17).toString())){
+									flag = "1";//牵引
+								}
+								if("25.0".equals(row.getCell(17).toString())){
+									flag = "3";//惰行
+								}
 								EnergySection energySection = new EnergySection();
 								energySection.setStart(row.getCell(0)+"");
 								energySection.setEnerge(0.0);
+								double d1 = row.getCell(13).getNumericCellValue();
+								double d2 = row.getCell(14).getNumericCellValue();
+								energySection.setEnerge(d1*d2);
 								energySection.setEnd(row.getCell(0)+"");
-								energySection.setInfo(row.getCell(16)+"");
+								energySection.setInfo(flag);
 								energeSections.add(energySection);
 							}
 						}

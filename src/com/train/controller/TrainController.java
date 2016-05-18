@@ -60,11 +60,10 @@ public class TrainController {
 		JSONArray jsonArray1 = null;
 		JSONArray jsonArray2 = null;
 		String upLoadPath = rootpath + "statics\\upload\\doc\\template.xlsx";
-		String fileName = "template.xlsx";
 		String temp = "[{name: 'speed',data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],pointInterval: 200}"
 				+ ",{name: 'power',data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6, 176.0, 135.6],yAxis: 1,pointInterval: 200}]";
 		String title = "数据分析图";
-		Map<String, Object> param = new HashMap<>();
+		//Map<String, Object> param = new HashMap<>();
 		try {
 			//jsonArray = trainService.uploadfile(request, response, file, upLoadPath, param, 1);
 			//jsonArray2 = trainService.uploadfile(request, response, file, upLoadPath, param, 2);
@@ -79,9 +78,9 @@ public class TrainController {
 				for(JSONObject jsonObject : train.getDistance_json()){
 					jsonArray2.add(jsonObject);
 				}
-				for(EnergySection energySection : train.getEnergySection()){
-					logger.debug(energySection);
-				}
+//				for(EnergySection energySection : train.getEnergySection()){
+//					logger.debug(energySection);
+//				}
 			}
 			map.put("data", jsonArray1);
 			map.put("data2", jsonArray2);
