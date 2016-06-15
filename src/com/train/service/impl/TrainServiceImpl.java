@@ -99,13 +99,13 @@ public class TrainServiceImpl implements TrainService {
 							//EBI触发次数
 							EBInum = row.getCell(9).getNumericCellValue() > row.getCell(3).getNumericCellValue()?(EBInum+1):EBInum;
 							// 记录数据
-							speed.add(row.getCell(12).getNumericCellValue());
+							speed.add(row.getCell(11).getNumericCellValue());
 							speed.add(row.getCell(7).getNumericCellValue());
-							slope.add(row.getCell(12).getNumericCellValue());
+							slope.add(row.getCell(11).getNumericCellValue());
 							slope.add(row.getCell(14).getNumericCellValue());
-							force.add(row.getCell(12).getNumericCellValue());
+							force.add(row.getCell(11).getNumericCellValue());
 							force.add(row.getCell(16).getNumericCellValue());
-							power.add(row.getCell(12).getNumericCellValue());
+							power.add(row.getCell(11).getNumericCellValue());
 							power.add(row.getCell(17).getNumericCellValue());
 							speedList.add(speed);
 							slopeList.add(slope);
@@ -265,7 +265,7 @@ public class TrainServiceImpl implements TrainService {
 						// 记录数据
 						double speed_temp = row.getCell(9).getNumericCellValue();
 						double slope_temp = row.getCell(18).getNumericCellValue();
-						double distance_temp = "".equals(row.getCell(12).getStringCellValue())?0.0:row.getCell(12).getNumericCellValue();
+						double distance_temp = "".equals(row.getCell(11))?0.0:row.getCell(11).getNumericCellValue();
 						double force_temp = "".equals(row.getCell(20).getStringCellValue())?0.0:row.getCell(20).getNumericCellValue();
 						double power_temp = "".equals(row.getCell(21).getStringCellValue())?0.0:row.getCell(21).getNumericCellValue();
 						speed.add(speed_temp);
@@ -332,9 +332,9 @@ public class TrainServiceImpl implements TrainService {
 							}
 							EnergySection energySection = new EnergySection();
 							energySection.setStart(row.getCell(0)+"");
-							double d1 = row.getCell(13).getNumericCellValue();
-							double d2 = row.getCell(14).getNumericCellValue();
-							energySection.setEnerge(d1*d2);
+//							double d1 = row.getCell(13).getNumericCellValue();
+//							double d2 = row.getCell(14).getNumericCellValue();
+//							energySection.setEnerge(d1*d2);
 							energySection.setInfo(flag);
 							energySection.setEnd(row.getCell(0)+"");
 							energeSections.add(energySection);
@@ -351,9 +351,9 @@ public class TrainServiceImpl implements TrainService {
 							}
 							if(flag.equals(flag2)){
 								EnergySection energySection = energeSections.get(energeSections.size()-1);//得到上一次的能量
-								double d1 = row.getCell(13).getNumericCellValue();
-								double d2 = row.getCell(14).getNumericCellValue();
-								energySection.setEnerge((d1*d2)+energySection.getEnerge());
+//								double d1 = row.getCell(13).getNumericCellValue();
+//								double d2 = row.getCell(14).getNumericCellValue();
+//								energySection.setEnerge((d1*d2)+energySection.getEnerge());
 								energySection.setInfo(flag);
 								energySection.setEnd(row.getCell(0)+"");
 							}else{
@@ -369,9 +369,9 @@ public class TrainServiceImpl implements TrainService {
 								EnergySection energySection = new EnergySection();
 								energySection.setStart(row.getCell(0)+"");
 								energySection.setEnerge(0.0);
-								double d1 = row.getCell(13).getNumericCellValue();
-								double d2 = row.getCell(14).getNumericCellValue();
-								energySection.setEnerge(d1*d2);
+//								double d1 = row.getCell(13).getNumericCellValue();
+//								double d2 = row.getCell(14).getNumericCellValue();
+//								energySection.setEnerge(d1*d2);
 								energySection.setEnd(row.getCell(0)+"");
 								energySection.setInfo(flag);
 								energeSections.add(energySection);
